@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 
 const Receipt = () => {
@@ -74,8 +74,8 @@ const Receipt = () => {
       <TouchableOpacity style={styles.shareButton}>
         <Text style={styles.shareText}>📄 Share Receipt</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.closeButton}>
-        <Text style={styles.closeText}>Close</Text>
+      <TouchableOpacity style={styles.closeButton} onPress={router.dismissAll}>
+        <Text style={styles.closeText}>Done</Text>
       </TouchableOpacity>
     </View>
   )

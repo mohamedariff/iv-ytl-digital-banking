@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-import useBankAccountStore from '../store/bankAccount'
+import useBankAccountStore from '@/store/bankAccount'
 
 const CreditCard = () => {
   const cardInfo = useBankAccountStore.use.card()

@@ -3,7 +3,7 @@ import uuid from 'react-native-uuid'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import createSelectors from './createSelectors'
+import createSelectors from '@/store/createSelectors'
 
 export type Transaction = {
   status: 'success' | 'failed'
@@ -46,7 +46,7 @@ const useBankAccountStore = create<BankAccountState>()(
       transfer: (data) => {
         const transaction: Transaction = {
           status: 'success' as const,
-          date: new Date().toLocaleDateString(),
+          date: new Date().toISOString(),
           transactionId: uuid.v4() as string,
           amount: data.amount,
           account: data.accountNumber,

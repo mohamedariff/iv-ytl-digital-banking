@@ -5,7 +5,7 @@ export default function RootLayout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#f4511e'
+          backgroundColor: '#2F4F2F'
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -16,6 +16,7 @@ export default function RootLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="transfer" />
       <Stack.Screen name="receipt" />
+      <Stack.Screen name="processing" />
     </Stack>
   )
 }

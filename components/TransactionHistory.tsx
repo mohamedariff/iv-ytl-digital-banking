@@ -1,11 +1,10 @@
-import type { Transaction } from '../store/bankAccount'
+import type { Transaction } from '@/store/bankAccount'
 
 import React from 'react'
+import { Link } from 'expo-router'
 import { FlatList, Text, View } from 'react-native'
 
-import useBankAccountStore from '../store/bankAccount'
-import { Link } from 'expo-router'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import useBankAccountStore from '@/store/bankAccount'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 
@@ -60,7 +59,7 @@ function TransactionHistory() {
             alignItems: 'center'
           }}
         >
-          <Link href="/transfer">
+          <Link href={{ pathname: '/processing', params: { ...item } }}>
             <View style={{ alignItems: 'center', gap: 5 }}>
               <FontAwesome name="dollar" size={22} color="gray" />
               <Text
