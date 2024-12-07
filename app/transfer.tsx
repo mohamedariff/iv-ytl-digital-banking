@@ -7,8 +7,7 @@ import { KeyboardAvoidingView, Platform, View } from 'react-native'
 
 import CustomInput from '@/components/CustomInput'
 import CustomButton from '@/components/CustomButton'
-
-import useBankAccountStore from '@/store/bankAccount'
+import Contacts from '@/components/Contacts'
 
 export default function Transfer() {
   const {
@@ -36,6 +35,14 @@ export default function Transfer() {
           alignItems: 'center'
         }}
       >
+        <Controller
+          control={control}
+          name="contact"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Contacts {...{ onChange, onBlur, value }} />
+          )}
+        />
+
         <Controller
           control={control}
           name="accountNumber"

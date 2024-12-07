@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5', // Light gray background
     padding: 16,
     borderRadius: 8, // Rounded corners
-    fontSize: 18,
     color: '#000', // Black text for input
     fontWeight: '500'
   }
