@@ -8,7 +8,7 @@ import { useForm, Controller } from 'react-hook-form'
 import CustomInput from '@/components/CustomInput'
 import CustomButton from '@/components/CustomButton'
 
-import useBankAccountStore from '../store/bankAccount'
+import useBankAccountStore from '@/store/bankAccount'
 
 export default function Transfer() {
   const transfer = useBankAccountStore.use.transfer()
@@ -39,9 +39,13 @@ export default function Transfer() {
         control={control}
         name="accountNumber"
         rules={{
+          required: {
+            value: true,
+            message: 'Account number is required'
+          },
           maxLength: {
             value: 12,
-            message: 'Account number must be 12 characters'
+            message: 'Account number must be valid'
           }
         }}
         render={({ field: { onChange, onBlur, value } }) => (
@@ -62,6 +66,12 @@ export default function Transfer() {
       <Controller
         control={control}
         name="amount"
+        rules={{
+          required: {
+            value: true,
+            message: 'Amount is required'
+          }
+        }}
         render={({ field: { onChange, onBlur, value } }) => (
           <CustomInput
             label="Amount"
@@ -95,8 +105,8 @@ export default function Transfer() {
       />
 
       <CustomButton
-        buttonStyle={{ marginTop: 20 }}
         label="Transfer Now"
+        buttonStyle={{ marginTop: 20 }}
         onPress={handleSubmit(onSubmit)}
       />
     </View>
