@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { Link } from 'expo-router'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 import CreditCard from '@/components/CreditCard'
 import TransactionHistory from '@/components/TransactionHistory'
@@ -9,17 +9,13 @@ import TransactionHistory from '@/components/TransactionHistory'
 export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
-      <CreditCard
-        cardHolder={'Mat Arep'}
-        cardNumber={'1234 5678 9010'}
-        expiryDate={'1/12'}
-      />
+      <CreditCard />
 
       <View
         style={{
+          gap: 20,
           flexDirection: 'row',
           alignItems: 'baseline',
-          gap: 20,
           marginBottom: 20,
           paddingHorizontal: 20
         }}
