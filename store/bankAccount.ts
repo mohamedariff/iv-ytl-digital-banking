@@ -1,5 +1,7 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import uuid from 'react-native-uuid'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import createSelectors from './createSelectors'
 
@@ -8,24 +10,63 @@ export type Transaction = {
   date: string
   transactionId: string
   amount: number
-  name: string
   account: string
 }
 
-interface BankAccountState {
+type Card = {
+  cardHolder: string
+  cardNumber: string
+  expiryDate: string
   balance: number
+  accountNumber: number
+}
+
+export type TransferInput = {
+  accountNumber: string
+  amount: number
+  remarks: string
+}
+interface BankAccountState {
+  card: Card
   transactions: Transaction[]
-  transfer: (amount: number) => void
+  transfer: (data: TransferInput) => Transaction
 }
 
 const useBankAccountStore = create<BankAccountState>()(
   persist(
     (set) => ({
-      balance: 0,
+      card: {
+        cardHolder: 'Mat Arep',
+        cardNumber: '1234 5678 9876',
+        expiryDate: '01/12',
+        balance: 4900,
+        accountNumber: 158015256762,
+      },
       transactions: [],
-      transfer: (amount) => set((state) => ({ balance: state.balance - amount })),
+      transfer: (data) => {
+        const transaction: Transaction = {
+          status: 'success' as const,
+          date: new Date().toLocaleDateString(),
+          transactionId: uuid.v4() as string,
+          amount: data.amount,
+          account: data.accountNumber,
+        };
+
+        set((state) => ({
+          card: {
+            ...state.card,
+            balance: state.card.balance - data.amount
+          },
+          transactions: [...state.transactions, transaction]
+        }));
+
+        return transaction;
+      },
     }),
-    { name: 'BankAccountStore' },
+    {
+      name: 'BankAccountStore',
+      storage: createJSONStorage(() => AsyncStorage)
+    },
   ),
 )
 
