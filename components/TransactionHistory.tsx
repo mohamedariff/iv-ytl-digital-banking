@@ -76,7 +76,7 @@ function TransactionHistory() {
             </View>
           </Link>
 
-          <Link href="/receipt">
+          <Link href={{ pathname: '/receipt', params: { ...item } }}>
             <View style={{ alignItems: 'center', gap: 5 }}>
               <FontAwesome6 name="receipt" size={24} color="gray" />
               <Text
