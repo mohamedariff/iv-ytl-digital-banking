@@ -45,7 +45,7 @@ function ContactList({ onChange, value }: any) {
   }
 
   return (
-    <View style={{ width: '100%' }}>
+    <View style={{ width: '100%', marginBottom: 20 }}>
       <Text style={styles.headerText}>Contacts</Text>
       <Dropdown
         style={styles.dropdown}
@@ -111,7 +111,8 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   placeholderStyle: {
-    fontSize: 16
+    fontSize: 14,
+    color: 'silver'
   },
   selectedTextStyle: {
     fontSize: 16
@@ -122,7 +123,8 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16
+    fontSize: 14,
+    color: 'silver'
   }
 })
 
