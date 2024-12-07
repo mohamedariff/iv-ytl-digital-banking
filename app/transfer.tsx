@@ -5,13 +5,14 @@ import { router } from 'expo-router'
 import { useForm, Controller } from 'react-hook-form'
 import { KeyboardAvoidingView, Platform, View } from 'react-native'
 
+import Contacts from '@/components/Contacts'
 import CustomInput from '@/components/CustomInput'
 import CustomButton from '@/components/CustomButton'
-import Contacts from '@/components/Contacts'
 
-export default function Transfer() {
+function Transfer() {
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm<TransferInput>()
@@ -38,8 +39,24 @@ export default function Transfer() {
         <Controller
           control={control}
           name="contact"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Contacts {...{ onChange, onBlur, value }} />
+          render={({ field: { onChange, value } }) => (
+            <Contacts
+              onChange={(newValue: string) => {
+                onChange(newValue)
+                try {
+                  const contactData = JSON.parse(newValue)
+                  if (contactData.phoneNumbers?.[0].number) {
+                    setValue(
+                      'accountNumber',
+                      contactData.phoneNumbers[0].number.replace(/[^0-9]/g, '')
+                    )
+                  }
+                } catch (e) {
+                  console.error('Error parsing contact data:', e)
+                }
+              }}
+              value={value}
+            />
           )}
         />
 
@@ -50,6 +67,10 @@ export default function Transfer() {
             required: {
               value: true,
               message: 'Account number is required'
+            },
+            minLength: {
+              value: 9,
+              message: 'Account number must be at least 9 digits'
             },
             maxLength: {
               value: 12,
@@ -121,3 +142,5 @@ export default function Transfer() {
     </KeyboardAvoidingView>
   )
 }
+
+export default Transfer

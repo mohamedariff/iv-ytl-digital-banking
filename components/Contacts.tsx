@@ -9,9 +9,9 @@ type ContactDropdownItem = {
   value: string | undefined
 }
 
-function ContactList() {
+function ContactList({ onChange, value }: any) {
   const [contacts, setContacts] = useState<Contacts.Contact[]>([])
-  const [selectedContact, setSelectedContact] = useState<string>()
+  // const [selectedContact, setSelectedContact] = useState<string>()
 
   useEffect(() => {
     ;(async () => {
@@ -25,14 +25,14 @@ function ContactList() {
 
   const contactList = contacts.map((contact) => ({
     label: contact.firstName!,
-    value: contact.phoneNumbers?.[0].number
+    value: JSON.stringify(contact)
   }))
 
   const renderItem = (item: ContactDropdownItem) => {
     return (
       <View style={styles.item}>
         <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === selectedContact && (
+        {item.value === value && (
           <AntDesign
             style={styles.icon}
             color="black"
@@ -60,8 +60,8 @@ function ContactList() {
         valueField="value"
         placeholder="Select a contact.."
         searchPlaceholder="Search name.."
-        value={selectedContact}
-        onChange={(item) => setSelectedContact(item.value)}
+        value={value}
+        onChange={(item) => onChange(item.value)}
         renderItem={renderItem}
       />
     </View>

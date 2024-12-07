@@ -1,3 +1,5 @@
+import type { Contact } from 'expo-contacts'
+
 import { create } from 'zustand'
 import uuid from 'react-native-uuid'
 import { createJSONStorage, persist } from 'zustand/middleware'
@@ -25,6 +27,7 @@ export type TransferInput = {
   accountNumber: string
   amount: number
   remarks: string
+  contact?: Contact
 }
 interface BankAccountState {
   card: Card
