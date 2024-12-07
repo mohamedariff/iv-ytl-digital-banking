@@ -1,12 +1,15 @@
 import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
+import { persist } from 'zustand/middleware'
+
 import createSelectors from './createSelectors'
 
-type Transaction = {
+export type Transaction = {
   status: 'success' | 'failed'
   date: string
   transactionId: string
   amount: number
+  name: string
+  account: string
 }
 
 interface BankAccountState {
@@ -16,15 +19,13 @@ interface BankAccountState {
 }
 
 const useBankAccountStore = create<BankAccountState>()(
-  devtools(
-    persist(
-      (set) => ({
-        balance: 0,
-        transactions: [],
-        transfer: (amount) => set((state) => ({ balance: state.balance - amount })),
-      }),
-      { name: 'BankAccountStore' },
-    ),
+  persist(
+    (set) => ({
+      balance: 0,
+      transactions: [],
+      transfer: (amount) => set((state) => ({ balance: state.balance - amount })),
+    }),
+    { name: 'BankAccountStore' },
   ),
 )
 
