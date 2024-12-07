@@ -2,21 +2,14 @@ import { Stack } from 'expo-router'
 
 export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#2F4F2F'
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold'
-        }
-      }}
-    >
-      <Stack.Screen name="index" />
-      <Stack.Screen name="transfer" />
-      <Stack.Screen name="receipt" />
-      <Stack.Screen name="processing" />
+    <Stack screenOptions={{ headerTitleStyle: { fontWeight: 'bold' } }}>
+      <Stack.Screen
+        name="index"
+        options={{ headerShown: false, headerTitle: '' }}
+      />
+      <Stack.Screen name="transfer" options={{ headerTitle: 'Transfer' }} />
+      <Stack.Screen name="receipt" options={{ headerShown: false }} />
+      <Stack.Screen name="processing" options={{ headerShown: false }} />
     </Stack>
   )
 }
