@@ -1,7 +1,10 @@
 import React from 'react'
+import { useLocalSearchParams } from 'expo-router'
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 
 const Receipt = () => {
+  const params = useLocalSearchParams()
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -13,9 +16,14 @@ const Receipt = () => {
           style={styles.profileImage}
           source={{ uri: 'https://via.placeholder.com/80' }} // Replace with actual image URL
         />
-        <Text style={styles.amount}>RM5,000.00</Text>
+        <Text style={styles.amount}>
+          {new Intl.NumberFormat('ms-MY', {
+            style: 'currency',
+            currency: 'MYR'
+          }).format(Number(params.amount))}
+        </Text>
         <Text style={styles.name}>Mat Jargon</Text>
-        <Text style={styles.account}>6090358170 - BCA</Text>
+        <Text style={styles.account}>{params.account}</Text>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Nota kaki</Text>
         </TouchableOpacity>
@@ -24,11 +32,11 @@ const Receipt = () => {
         <View style={styles.detailsContainer}>
           <View style={styles.row}>
             <Text style={styles.label}>Status</Text>
-            <Text style={styles.success}>Success</Text>
+            <Text style={styles.success}>{params.status}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Date</Text>
-            <Text style={styles.value}>18 July 2023</Text>
+            <Text style={styles.value}>{params.date}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Time</Text>
@@ -36,21 +44,28 @@ const Receipt = () => {
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Transaction ID</Text>
-            <View style={styles.transactionRow}>
-              <Text style={styles.value}>CGX-1097564</Text>
+            <View style={[styles.transactionRow, { overflow: 'hidden' }]}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={[styles.value, { overflow: 'hidden' }]}
+              >
+                {params.transactionId}
+              </Text>
               <TouchableOpacity>
                 <Text style={styles.copy}>Copy</Text>
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Tax</Text>
-            <Text style={styles.value}>RM50</Text>
-          </View>
           <View style={styles.divider} />
           <View style={styles.row}>
             <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.total}>RM5,000</Text>
+            <Text style={styles.total}>
+              {new Intl.NumberFormat('ms-MY', {
+                style: 'currency',
+                currency: 'MYR'
+              }).format(Number(params.amount))}
+            </Text>
           </View>
         </View>
       </View>
