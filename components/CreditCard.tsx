@@ -2,7 +2,11 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-const CreditCard = ({ cardHolder, cardNumber, expiryDate }) => {
+import useBankAccountStore from '../store/bankAccount'
+
+const CreditCard = () => {
+  const cardInfo = useBankAccountStore.use.card()
+
   return (
     <LinearGradient
       colors={['#7F00FF', '#E100FF']}
@@ -11,20 +15,29 @@ const CreditCard = ({ cardHolder, cardNumber, expiryDate }) => {
       style={styles.cardContainer}
     >
       <View>
-        <Text style={styles.cardNumber}>
-          {cardNumber.replace(/(.{4})/g, '$1 ')}
-        </Text>
         <Text style={styles.label}>Available Balance</Text>
-        <Text style={styles.expiryDate}>$ 5,000.00</Text>
-        <View style={styles.cardDetails}>
-          <View>
-            <Text style={styles.label}>Cardholder</Text>
-            <Text style={styles.cardHolder}>{cardHolder}</Text>
-          </View>
-          <View>
-            <Text style={styles.label}>Expires</Text>
-            <Text style={styles.expiryDate}>{expiryDate}</Text>
-          </View>
+        <Text style={styles.expiryDate}>
+          {new Intl.NumberFormat('ms-MY', {
+            style: 'currency',
+            currency: 'MYR'
+          }).format(cardInfo.balance)}
+        </Text>
+      </View>
+
+      <View style={{ marginTop: 30 }}>
+        <Text style={styles.cardNumber}>
+          {cardInfo.cardNumber.replace(/(.{4})/g, '$1 ')}
+        </Text>
+      </View>
+
+      <View style={styles.cardDetails}>
+        <View>
+          <Text style={styles.label}>Cardholder</Text>
+          <Text style={styles.cardHolder}>{cardInfo.cardHolder}</Text>
+        </View>
+        <View>
+          <Text style={styles.label}>Expires</Text>
+          <Text style={styles.expiryDate}>{cardInfo.expiryDate}</Text>
         </View>
       </View>
     </LinearGradient>
