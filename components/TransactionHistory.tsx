@@ -116,16 +116,17 @@ function TransactionHistory() {
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Text style={{ marginLeft: -10, marginBottom: 10, fontWeight: '500' }}>
         Transaction History
       </Text>
 
       <FlatList
+        renderItem={renderList}
         data={transactionHistory}
         contentContainerStyle={{ gap: 10 }}
-        renderItem={renderList}
         keyExtractor={(item) => item.transactionId}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   )

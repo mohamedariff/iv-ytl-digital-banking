@@ -16,7 +16,7 @@ function CustomButton({ label, onPress, buttonStyle }: CustomButtonProps) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#2F4F2F', // Dark banana leaf green color
+    backgroundColor: '#7F00FF', // Dark banana leaf green color
     paddingVertical: 16,
     borderRadius: 25,
     justifyContent: 'center',

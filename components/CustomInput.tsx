@@ -6,8 +6,8 @@ import { StyleSheet, Text, TextInput, View } from 'react-native'
 
 type CustomInputProps = {
   label: string
-  textInputProps?: TextInputProps
   error?: FieldError
+  textInputProps?: TextInputProps
 }
 
 function CustomInput({ label, textInputProps, error }: CustomInputProps) {
@@ -15,10 +15,7 @@ function CustomInput({ label, textInputProps, error }: CustomInputProps) {
     <View style={{ width: '100%' }}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
-        style={[
-          styles.input,
-          error?.message && { borderColor: 'red', borderWidth: 0.5 }
-        ]}
+        style={[styles.input, error?.message && styles.errorMessage]}
         autoCorrect={false}
         placeholder="$0.00"
         value={textInputProps?.value}
@@ -38,21 +35,28 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
     marginBottom: 8,
-    color: '#000' // Black text
+    fontWeight: '500'
   },
   error: {
     fontSize: 13,
+    color: 'red',
     marginTop: 4,
-    fontWeight: '400',
-    color: 'red'
+    fontWeight: '400'
   },
   input: {
-    backgroundColor: '#F5F5F5', // Light gray background
-    padding: 16,
-    borderRadius: 8, // Rounded corners
-    color: '#000', // Black text for input
-    fontWeight: '500'
+    height: 50,
+    padding: 12,
+    elevation: 2,
+    borderRadius: 8,
+    shadowRadius: 1.41,
+    shadowOpacity: 0.2,
+    shadowColor: '#000',
+    backgroundColor: '#F5F5F5',
+    shadowOffset: { width: 0, height: 1 }
+  },
+  errorMessage: {
+    borderWidth: 0.5,
+    borderColor: 'red'
   }
 })
