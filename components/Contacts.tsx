@@ -4,6 +4,8 @@ import { Dropdown } from 'react-native-element-dropdown'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import * as Contacts from 'expo-contacts'
 
+import { checkContactsPermission } from '@/utils'
+
 type ContactDropdownItem = {
   label: string
   value: string | undefined
@@ -11,16 +13,16 @@ type ContactDropdownItem = {
 
 function ContactList({ onChange, value }: any) {
   const [contacts, setContacts] = useState<Contacts.Contact[]>([])
-  // const [selectedContact, setSelectedContact] = useState<string>()
 
+  const loadContacts = async () => {
+    const status = await checkContactsPermission()
+    if (status === 'granted') {
+      const { data } = await Contacts.getContactsAsync()
+      setContacts(data)
+    }
+  }
   useEffect(() => {
-    ;(async () => {
-      const { status } = await Contacts.requestPermissionsAsync()
-      if (status === 'granted') {
-        const { data } = await Contacts.getContactsAsync()
-        setContacts(data)
-      }
-    })()
+    loadContacts()
   }, [])
 
   const contactList = contacts.map((contact) => ({
@@ -29,14 +31,15 @@ function ContactList({ onChange, value }: any) {
   }))
 
   const renderItem = (item: ContactDropdownItem) => {
+    const isSelected = item.value === value
     return (
       <View style={styles.item}>
         <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === value && (
+        {isSelected && (
           <AntDesign
             style={styles.icon}
-            color="black"
             name="select1"
+            color="black"
             size={20}
           />
         )}
@@ -45,66 +48,59 @@ function ContactList({ onChange, value }: any) {
   }
 
   return (
-    <View style={{ width: '100%', marginBottom: 20 }}>
-      <Text style={styles.headerText}>Contacts</Text>
+    <View style={styles.container}>
+      <Text style={styles.headerText}>Contact</Text>
+
       <Dropdown
         style={styles.dropdown}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
+        placeholderStyle={styles.placeholderStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        selectedTextStyle={styles.selectedTextStyle}
         data={contactList}
-        search
-        maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder="Select a contact.."
         searchPlaceholder="Search name.."
+        search
         value={value}
-        onChange={(item) => onChange(item.value)}
+        maxHeight={300}
         renderItem={renderItem}
+        onChange={(item) => onChange(item.value)}
       />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: '#F5F5F5', // Light gray background
-    padding: 16,
-    borderRadius: 8, // Rounded corners
-    color: '#000', // Black text for input
-    fontWeight: '500'
+  container: {
+    width: '100%',
+    marginBottom: 10
   },
   headerText: {
     fontSize: 16,
-    fontWeight: '500',
     marginBottom: 8,
-    color: '#000' // Black text
+    fontWeight: '500'
   },
   dropdown: {
     height: 50,
-    backgroundColor: 'white',
-    borderRadius: 8,
     padding: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1
-    },
-    shadowOpacity: 0.2,
+    elevation: 2,
+    borderRadius: 8,
     shadowRadius: 1.41,
-
-    elevation: 2
+    shadowOpacity: 0.2,
+    shadowColor: '#000',
+    backgroundColor: '#F5F5F5',
+    shadowOffset: { width: 0, height: 1 }
   },
   icon: {
     marginRight: 5
   },
   item: {
     padding: 17,
+    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    justifyContent: 'space-between'
   },
   textItem: {
     flex: 1,

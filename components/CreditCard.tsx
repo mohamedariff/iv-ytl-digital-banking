@@ -46,7 +46,7 @@ const CreditCard = () => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    width: '90%',
+    width: '100%',
     height: 200,
     borderRadius: 16,
     padding: 20,

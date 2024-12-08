@@ -3,11 +3,18 @@ import type { TransferInput } from '@/store/bankAccount'
 
 import { router } from 'expo-router'
 import { useForm, Controller } from 'react-hook-form'
-import { KeyboardAvoidingView, Platform, View } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  View
+} from 'react-native'
 
 import Contacts from '@/components/Contacts'
 import CustomInput from '@/components/CustomInput'
 import CustomButton from '@/components/CustomButton'
+import CustomHeader from '@/components/CustomHeader'
 
 function Transfer() {
   const {
@@ -18,129 +25,152 @@ function Transfer() {
   } = useForm<TransferInput>()
 
   const onSubmit = (data: TransferInput) => {
-    router.push({ pathname: '/processing', params: data })
+    const params = {
+      ...data,
+      contact: JSON.stringify(data.contact)
+    }
+    router.push({ pathname: '/processing', params })
   }
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={styles.keyboardAvoidingView}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View
-        style={{
-          flex: 1,
-          gap: 10,
-          paddingHorizontal: 20,
-          backgroundColor: 'silver',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <Controller
-          control={control}
-          name="contact"
-          render={({ field: { onChange, value } }) => (
-            <Contacts
-              onChange={(newValue: string) => {
-                onChange(newValue)
-                try {
-                  const contactData = JSON.parse(newValue)
-                  if (contactData.phoneNumbers?.[0].number) {
-                    setValue(
-                      'accountNumber',
-                      contactData.phoneNumbers[0].number.replace(/[^0-9]/g, '')
-                    )
-                  }
-                } catch (e) {
-                  console.error('Error parsing contact data:', e)
+      <SafeAreaView style={styles.safeareaview}>
+        <View style={styles.container}>
+          <CustomHeader title="Transfer To" />
+
+          <View style={styles.formContainer}>
+            <Controller
+              control={control}
+              name="contact"
+              render={({ field: { onChange, value } }) => (
+                <Contacts
+                  value={value}
+                  onChange={(newValue: string) => {
+                    onChange(newValue)
+                    try {
+                      const contactData = JSON.parse(newValue)
+                      if (contactData.phoneNumbers?.[0].number) {
+                        setValue(
+                          'accountNumber',
+                          contactData.phoneNumbers[0].number.replace(
+                            /[^0-9]/g,
+                            ''
+                          )
+                        )
+                      }
+                    } catch (e) {
+                      console.error('Error parsing contact data:', e)
+                    }
+                  }}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="accountNumber"
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Account number is required'
+                },
+                minLength: {
+                  value: 9,
+                  message: 'Account number must be at least 9 digits'
+                },
+                maxLength: {
+                  value: 12,
+                  message: 'Account number must be valid'
+                },
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: 'Only numbers are allowed'
                 }
               }}
-              value={value}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  label="Account Number"
+                  error={errors.accountNumber as FieldError}
+                  textInputProps={{
+                    placeholder: 'Enter bank account..',
+                    keyboardType: 'number-pad',
+                    onChangeText: onChange,
+                    value,
+                    onBlur
+                  }}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          control={control}
-          name="accountNumber"
-          rules={{
-            required: {
-              value: true,
-              message: 'Account number is required'
-            },
-            minLength: {
-              value: 9,
-              message: 'Account number must be at least 9 digits'
-            },
-            maxLength: {
-              value: 12,
-              message: 'Account number must be valid'
-            }
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <CustomInput
-              label="Account Number"
-              error={errors.accountNumber as FieldError}
-              textInputProps={{
-                placeholder: 'Enter bank account..',
-                keyboardType: 'decimal-pad',
-                onChangeText: onChange,
-                value,
-                onBlur
+            <Controller
+              control={control}
+              name="amount"
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Amount is required'
+                },
+                pattern: {
+                  value: /^[0-9]+(\.[0-9]*)?$/,
+                  message: 'Only numbers and decimal point are allowed'
+                }
               }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  label="Amount"
+                  error={errors.amount as FieldError}
+                  textInputProps={{
+                    keyboardType: 'decimal-pad',
+                    onChangeText: onChange,
+                    value: value?.toString(),
+                    onBlur
+                  }}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          control={control}
-          name="amount"
-          rules={{
-            required: {
-              value: true,
-              message: 'Amount is required'
-            }
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <CustomInput
-              label="Amount"
-              textInputProps={{
-                keyboardType: 'decimal-pad',
-                onChangeText: onChange,
-                value: value?.toString(),
-                onBlur
-              }}
+            <Controller
+              control={control}
+              name="remarks"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  label="Remarks"
+                  textInputProps={{
+                    placeholder: 'Enter remarks..',
+                    keyboardType: 'default',
+                    multiline: true,
+                    autoCapitalize: 'none',
+                    onChangeText: onChange,
+                    value,
+                    onBlur
+                  }}
+                />
+              )}
             />
-          )}
-        />
+          </View>
 
-        <Controller
-          control={control}
-          name="remarks"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <CustomInput
-              label="Remarks"
-              textInputProps={{
-                placeholder: 'Enter remarks..',
-                keyboardType: 'default',
-                multiline: true,
-                autoCapitalize: 'none',
-                onChangeText: onChange,
-                value,
-                onBlur
-              }}
-            />
-          )}
-        />
-
-        <CustomButton
-          label="Continue"
-          buttonStyle={{ marginTop: 20 }}
-          onPress={handleSubmit(onSubmit)}
-        />
-      </View>
+          <CustomButton
+            label="Continue"
+            onPress={handleSubmit(onSubmit)}
+            buttonStyle={{ alignSelf: 'center' }}
+          />
+        </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   )
 }
 
 export default Transfer
+
+const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+    backgroundColor: 'silver'
+  },
+  safeareaview: { flex: 1 },
+  container: { flex: 1, padding: 20 },
+  formContainer: { flex: 1, gap: 10, justifyContent: 'center' }
+})
