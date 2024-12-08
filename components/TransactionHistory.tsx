@@ -35,19 +35,39 @@ function TransactionHistory() {
             justifyContent: 'space-between'
           }}
         >
-          <View>
-            <Text style={{ color: 'gray' }}>{item.name}</Text>
+          <View style={{ gap: 5 }}>
+            <Text style={{ color: item.status === 'failed' ? 'red' : 'green' }}>
+              {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+            </Text>
             <Text style={{ color: 'gray' }}>{item.account}</Text>
           </View>
 
-          <View>
-            <Text style={{ color: 'green', fontWeight: '500', fontSize: 15 }}>
+          <View style={{ gap: 5 }}>
+            <Text
+              style={{
+                color: item.status === 'failed' ? 'red' : 'green',
+                fontWeight: '500',
+                fontSize: 15,
+                textAlign: 'right'
+              }}
+            >
               {new Intl.NumberFormat('ms-MY', {
                 style: 'currency',
                 currency: 'MYR'
               }).format(item.amount)}
             </Text>
-            <Text style={{ color: 'gray', fontSize: 13 }}>{item.date}</Text>
+            <Text style={{ color: 'gray', fontSize: 13 }}>
+              {new Date(item.date)
+                .toLocaleString('en-GB', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })
+                .replace(',', '')}
+            </Text>
           </View>
         </View>
 
