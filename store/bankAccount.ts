@@ -13,6 +13,7 @@ export type Transaction = {
   transactionId: string
   amount: number
   account: string
+  contact?: Contact
 }
 
 type Card = {
@@ -33,11 +34,12 @@ interface BankAccountState {
   card: Card
   transactions: Transaction[]
   transfer: (data: TransferInput) => Transaction
+  reset: () => void
 }
 
 const useBankAccountStore = create<BankAccountState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       card: {
         cardHolder: 'Mat Arep',
         cardNumber: '1234 5678 9876',
@@ -48,23 +50,40 @@ const useBankAccountStore = create<BankAccountState>()(
       transactions: [],
       transfer: (data) => {
         const transaction: Transaction = {
-          status: 'success' as const,
+          status: data.amount <= get().card.balance ? 'success' : 'failed' as const,
           date: new Date().toISOString(),
           transactionId: uuid.v4() as string,
           amount: data.amount,
           account: data.accountNumber,
+          contact: data.contact
         };
 
-        set((state) => ({
-          card: {
-            ...state.card,
-            balance: state.card.balance - data.amount
-          },
-          transactions: [...state.transactions, transaction]
-        }));
+        if (transaction.status === 'success') {
+          set((state) => ({
+            card: {
+              ...state.card,
+              balance: state.card.balance - data.amount
+            },
+            transactions: [transaction, ...state.transactions,]
+          }));
+        }
+        else {
+          set((state) => ({
+            transactions: [transaction, ...state.transactions,]
+          }));
+        }
 
         return transaction;
       },
+      reset: () => {
+        set((state) => ({
+          card: {
+            ...state.card,
+            balance: 4900
+          },
+          transactions: []
+        }))
+      }
     }),
     {
       name: 'BankAccountStore',
