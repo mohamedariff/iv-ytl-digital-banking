@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
-import { View, Text, Alert, StyleSheet } from 'react-native'
+import { View, Text, Alert, StyleSheet, SafeAreaView } from 'react-native'
 import * as LocalAuthentication from 'expo-local-authentication'
+import * as Device from 'expo-device'
 
 import CustomButton from '@/components/CustomButton'
 import useBankAccountStore from '@/store/bankAccount'
+import TransferSummary from '@/components/TransferSummary'
 
 const Processing = () => {
   const params = useLocalSearchParams()
@@ -29,7 +31,13 @@ const Processing = () => {
 
   // Prompt user for Face ID or Fingerprint authentication
   const handleBiometricAuthentication = async () => {
+    if (!Device.isDevice) {
+      const result = transfer(params as any)
+      return result && router.replace({ pathname: '/receipt', params: result })
+    }
+
     const biometricRecords = await LocalAuthentication.isEnrolledAsync()
+
     if (!biometricRecords) {
       Alert.alert(
         'No Biometrics Found',
@@ -47,13 +55,9 @@ const Processing = () => {
     if (result.success) {
       setIsAuthenticated(true)
 
-      const result = transfer({
-        accountNumber: params.accountNumber as string,
-        amount: Number(params.amount),
-        remarks: params.remarks as string
-      })
+      const result = transfer(params as any)
 
-      result && router.push({ pathname: '/receipt', params: result })
+      result && router.replace({ pathname: '/receipt', params: result })
     } else {
       // Alert.alert('Authentication Failed', 'Unable to verify your identity.')
     }
@@ -71,25 +75,27 @@ const Processing = () => {
   }, [])
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Processing</Text>
-      <Text style={styles.description}>
-        Please confirm your identity to proceed.
-      </Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Processing</Text>
+        <Text style={styles.description}>Authorise this transaction.</Text>
 
-      <View style={{ flexDirection: 'row', paddingHorizontal: 20 }}>
-        <CustomButton
-          label="Deny"
-          onPress={router.back}
-          buttonStyle={{ width: '50%' }}
-        />
-        <CustomButton
-          label="Approve"
-          onPress={handleBiometricAuthentication}
-          buttonStyle={{ width: '50%' }}
-        />
+        <TransferSummary type="process" />
+
+        <View style={{ flexDirection: 'row', paddingHorizontal: 20 }}>
+          <CustomButton
+            label="Deny"
+            onPress={router.back}
+            buttonStyle={{ width: '50%' }}
+          />
+          <CustomButton
+            label="Approve"
+            onPress={handleBiometricAuthentication}
+            buttonStyle={{ width: '50%' }}
+          />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -104,8 +110,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20
+    marginBottom: 20,
+    fontWeight: 'bold'
   },
   description: {
     fontSize: 16,
