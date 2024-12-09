@@ -11,6 +11,18 @@ type ContactDropdownItem = {
   value: string | undefined
 }
 
+/**
+ * @notes
+ * Performance optimizations that could be implemented:
+ * - Use useMemo for contactList transformation to prevent unnecessary re-renders.
+ * - Implement debouncing for search functionality
+ * - Consider using React.memo if parent re-renders frequently
+ *
+ * @todo
+ * - Add proper TypeScript types instead of 'any'
+ * - Add error handling for contacts permission denial
+ * - Add loading state handling
+ */
 function ContactList({ onChange, value }: any) {
   const [contacts, setContacts] = useState<Contacts.Contact[]>([])
 

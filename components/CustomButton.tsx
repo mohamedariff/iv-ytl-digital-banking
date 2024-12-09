@@ -6,6 +6,7 @@ type CustomButtonProps = {
   onPress: () => void
   buttonStyle?: any
 }
+
 function CustomButton({ label, onPress, buttonStyle }: CustomButtonProps) {
   return (
     <TouchableOpacity style={[styles.button, buttonStyle]} onPress={onPress}>
