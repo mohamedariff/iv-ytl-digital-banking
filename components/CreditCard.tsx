@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
+import { convertCurrency } from '@/utils'
 import useBankAccountStore from '@/store/bankAccount'
 
 const CreditCard = () => {
@@ -17,10 +18,7 @@ const CreditCard = () => {
       <View>
         <Text style={styles.label}>Available Balance</Text>
         <Text style={styles.expiryDate}>
-          {new Intl.NumberFormat('ms-MY', {
-            style: 'currency',
-            currency: 'MYR'
-          }).format(cardInfo.balance)}
+          {convertCurrency(cardInfo.balance)}
         </Text>
       </View>
 

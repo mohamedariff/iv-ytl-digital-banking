@@ -1,42 +1,49 @@
 import React from 'react'
 import { useLocalSearchParams } from 'expo-router'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Clipboard
+} from 'react-native'
 
+import {
+  convertCurrency,
+  convertDateToLocale,
+  uppercaseFirstLetter
+} from '@/utils'
 import useBankAccountStore from '@/store/bankAccount'
 
 type TransferSummaryType = 'receipt' | 'process'
 
 function TransferSummary({ type }: { type: TransferSummaryType }) {
   const params = useLocalSearchParams()
+
   const card = useBankAccountStore.use.card()
 
   const parseContact = params?.contact
     ? JSON.parse(params.contact as string)
     : {}
 
-  const formattedTimestamp = new Date(params.date)
-    .toLocaleString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    })
-    .replace(',', '')
+  const formattedTimestamp = convertDateToLocale(
+    (params.date as string) || new Date().toISOString()
+  )
 
-  const amountLocale = new Intl.NumberFormat('ms-MY', {
-    style: 'currency',
-    currency: 'MYR'
-  }).format(Number(params.amount))
+  const amountLocale = convertCurrency(Number(params.amount))
+
+  const isInsufficientBalance =
+    params.status === 'failed' && card.balance - Number(params.amount) < 0
 
   const status =
-    params.status?.charAt(0).toUpperCase() + params.status?.slice(1)
+    uppercaseFirstLetter(params.status as string) +
+    (isInsufficientBalance ? ' - Insufficient balance' : '')
 
   const copyToClipboard = (text: string) => Clipboard.setString(text)
 
   const data = [
-    type === 'receipt' && { label: 'Status', value: status },
+    ...(type === 'receipt' ? [{ label: 'Status', value: status }] : []),
     {
       label: 'Transfer to',
       value: params.account || parseContact.phoneNumbers?.[0].number
@@ -44,10 +51,9 @@ function TransferSummary({ type }: { type: TransferSummaryType }) {
     { label: 'Transfer from', value: card.accountNumber },
     { label: 'Amount', value: amountLocale },
     { label: 'Timestamp', value: formattedTimestamp },
-    type === 'receipt' && {
-      label: 'Transaction ID',
-      value: params.transactionId
-    }
+    ...(type === 'receipt'
+      ? [{ label: 'Transaction ID', value: params.transactionId }]
+      : [])
   ]
 
   return (
@@ -62,7 +68,6 @@ function TransferSummary({ type }: { type: TransferSummaryType }) {
         <Text style={styles.name}>{parseContact.firstName}</Text>
         <Text style={styles.amount}>{amountLocale}</Text>
 
-        {/* Details */}
         <View style={styles.detailsContainer}>
           {data.map((item) => {
             return (
@@ -73,7 +78,7 @@ function TransferSummary({ type }: { type: TransferSummaryType }) {
                   ellipsizeMode="tail"
                   style={[
                     styles.value,
-                    { maxWidth: 150, overflow: 'hidden' },
+                    { maxWidth: 180, overflow: 'hidden' },
                     item.label === 'Status' && {
                       color: params.status === 'failed' ? 'red' : 'green'
                     }
@@ -83,7 +88,9 @@ function TransferSummary({ type }: { type: TransferSummaryType }) {
                 </Text>
                 {item.label === 'Transaction ID' && (
                   <TouchableOpacity
-                    onPress={() => copyToClipboard(params.transactionId)}
+                    onPress={() =>
+                      copyToClipboard(params.transactionId as string)
+                    }
                   >
                     <Text style={styles.copy}>Copy</Text>
                   </TouchableOpacity>

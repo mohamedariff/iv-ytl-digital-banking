@@ -17,7 +17,6 @@ function CustomInput({ label, textInputProps, error }: CustomInputProps) {
       <TextInput
         style={[styles.input, error?.message && styles.errorMessage]}
         autoCorrect={false}
-        placeholder="$0.00"
         value={textInputProps?.value}
         onChangeText={textInputProps?.onChangeText}
         {...textInputProps}

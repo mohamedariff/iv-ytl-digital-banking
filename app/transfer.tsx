@@ -130,6 +130,7 @@ function Transfer() {
                     label="Amount"
                     error={errors.amount as FieldError}
                     textInputProps={{
+                      placeholder: '$0.00',
                       keyboardType: 'decimal-pad',
                       onChangeText: onChange,
                       value: value?.toString(),
