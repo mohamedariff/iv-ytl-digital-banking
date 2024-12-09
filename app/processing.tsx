@@ -1,51 +1,43 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { router, useLocalSearchParams } from 'expo-router'
 import { View, Text, Alert, StyleSheet, SafeAreaView } from 'react-native'
 import * as LocalAuthentication from 'expo-local-authentication'
 import * as Device from 'expo-device'
 
-import CustomButton from '@/components/CustomButton'
 import useBankAccountStore from '@/store/bankAccount'
+
+import CustomButton from '@/components/CustomButton'
 import TransferSummary from '@/components/TransferSummary'
 
 const Processing = () => {
   const params = useLocalSearchParams()
-
   const transfer = useBankAccountStore.use.transfer()
 
-  const [isBiometricSupported, setIsBiometricSupported] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-  // Check if biometrics are supported on the device
-  const checkBiometricSupport = async () => {
-    const compatible = await LocalAuthentication.hasHardwareAsync()
-    if (!compatible) {
+  const checkBiometricAvailability = async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync()
+    if (!hasHardware) {
       Alert.alert(
-        'Biometric Not Supported',
-        'Your device does not support Face ID or fingerprint authentication.'
+        'Error',
+        'Your device does not support biometric authentication.'
       )
-      return
+      return false
     }
-    setIsBiometricSupported(compatible)
+
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync()
+    if (!isEnrolled) {
+      Alert.alert('Error', 'No biometric data enrolled on this device.')
+      return false
+    }
+
+    return true
   }
 
-  // Prompt user for Face ID or Fingerprint authentication
   const handleBiometricAuthentication = async () => {
-    if (!Device.isDevice) {
-      const result = transfer(params as any)
-      return result && router.replace({ pathname: '/receipt', params: result })
-    }
-
-    const biometricRecords = await LocalAuthentication.isEnrolledAsync()
-
-    if (!biometricRecords) {
-      Alert.alert(
-        'No Biometrics Found',
-        'Please enroll your Face ID or Fingerprint in your device settings.'
-      )
-      return
-    }
+    const isAvailable = !Device.isDevice
+      ? true
+      : await checkBiometricAvailability()
+    if (!isAvailable) return
 
     const result = await LocalAuthentication.authenticateAsync({
       promptMessage: 'Authorise transfer',
@@ -54,25 +46,21 @@ const Processing = () => {
     })
 
     if (result.success) {
-      setIsAuthenticated(true)
-
       const result = transfer(params as any)
-
-      result && router.replace({ pathname: '/receipt', params: result })
+      if (result) {
+        const serializedParams = {
+          ...result,
+          contact: JSON.stringify(result.contact)
+        }
+        router.replace({ pathname: '/receipt', params: serializedParams })
+      }
     } else {
       // Alert.alert('Authentication Failed', 'Unable to verify your identity.')
     }
   }
 
-  // const checkAuthType = async () => {
-  //   const authTypes =
-  //     await LocalAuthentication.supportedAuthenticationTypesAsync()
-  // }
-
-  // Initialize biometric support check on mount
   React.useEffect(() => {
-    checkBiometricSupport()
-    // checkAuthType()
+    checkBiometricAvailability()
   }, [])
 
   return (
