@@ -1,50 +1,76 @@
-# Welcome to your Expo app 👋
+# YTL Digital Banking Interview Project
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Setup Instructions
 
-## Get started
+### Prerequisites
 
-1. Install dependencies
+- Node.js (v16 or higher)
+- npm or yarn package manager
+- Git
 
-   ```bash
-   npm install
-   ```
+### Installation Steps
 
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Install dependencies:
 
 ```bash
-npm run reset-project
+npm install
+# or
+yarn install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Start the application:
 
-## Learn more
+```bash
+npm dev
+# or
+yarn dev
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Install Expo Go on your mobile device:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+   - For iOS: [Download from App Store](https://apps.apple.com/app/expo-go/id982107779)
+   - For Android: [Download from Google Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent)
 
-## Join the community
+4. After starting the application, scan the QR code displayed in your terminal using:
+   - iOS: Camera app
+   - Android: Expo Go app
 
-Join our community of developers creating universal apps.
+### Brief Explanation
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+#### Design Decisions
+
+1. **State Management**: Implemented Zustand for efficient global state management:
+
+   - Reduces prop drilling
+   - Optimizes rendering performance
+   - Simplifies state persistence
+
+2. **Form Handling**: Chose React Hook Form for robust form management:
+
+   - Good error handling & validation
+   - Efficient form submission(less rerender vs formik)
+   - Simpler to implement compared to usestate which will be complex and alot more lines of code
+   - Improved developer experience
+
+3. **Navigation**: Utilized Expo Router for navigation:
+   - Built-in routing capabilities
+   - Seamless integration with Expo
+   - Type-safe navigation
+
+#### Challenges Faced
+
+1. **Dark Mode**: Time constraints prevented implementing dark mode text handling
+
+2. **Testing Limitations**:
+
+   - No physical Android device available for testing
+   - Limited biometric testing due to non-functional iPhone Face ID
+
+3. **Technical Hurdles**:
+
+   - First implementation of localAuthentication
+   - Limited ability to verify biometric authentication flow
+
+## Demo Video
+
+[View Demo Video](https://github.com/mohamedariff/iv-ytl-digital-banking/tree/main/assets/video/demo.mp4)
