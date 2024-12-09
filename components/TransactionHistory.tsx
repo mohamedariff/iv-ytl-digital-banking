@@ -3,10 +3,12 @@ import type { Transaction } from '@/store/bankAccount'
 import React from 'react'
 import { Link } from 'expo-router'
 import { FlatList, Text, View } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 
-import useBankAccountStore from '@/store/bankAccount'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+
+import useBankAccountStore from '@/store/bankAccount'
 
 type RenderListProps = {
   item: Transaction
@@ -17,14 +19,18 @@ function TransactionHistory() {
 
   const renderList = ({ item }: RenderListProps) => {
     return (
-      <View
+      <LinearGradient
+        colors={['#FFFFFF', '#F5F5F5', '#FFFFFF']}
         style={{
-          padding: 10,
-          borderRadius: 5,
+          paddingHorizontal: 10,
+          paddingVertical: 6,
+          borderRadius: 10,
           flexDirection: 'row',
           backgroundColor: 'white',
           justifyContent: 'space-between'
         }}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 1 }}
       >
         <View
           style={{
@@ -36,16 +42,20 @@ function TransactionHistory() {
           }}
         >
           <View style={{ gap: 5 }}>
-            <Text style={{ color: item.status === 'failed' ? 'red' : 'green' }}>
+            <Text
+              style={{
+                color: item.status === 'failed' ? '#FF6B6B' : '#66BB6A'
+              }}
+            >
               {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
             </Text>
-            <Text style={{ color: 'gray' }}>{item.account}</Text>
+            <Text style={{ color: '#9E9E9E' }}>{item.account}</Text>
           </View>
 
           <View style={{ gap: 5 }}>
             <Text
               style={{
-                color: item.status === 'failed' ? 'red' : 'green',
+                color: item.status === 'failed' ? '#FF6B6B' : '#66BB6A',
                 fontWeight: '500',
                 fontSize: 15,
                 textAlign: 'right'
@@ -56,7 +66,7 @@ function TransactionHistory() {
                 currency: 'MYR'
               }).format(item.amount)}
             </Text>
-            <Text style={{ color: 'gray', fontSize: 13 }}>
+            <Text style={{ color: '#9E9E9E', fontSize: 13 }}>
               {new Date(item.date)
                 .toLocaleString('en-GB', {
                   day: '2-digit',
@@ -81,7 +91,7 @@ function TransactionHistory() {
         >
           <Link href={{ pathname: '/processing', params: { ...item } }}>
             <View style={{ alignItems: 'center', gap: 5 }}>
-              <FontAwesome name="dollar" size={22} color="gray" />
+              <FontAwesome name="dollar" size={22} color="#9E9E9E" />
               <Text
                 style={{
                   width: 40,
@@ -97,7 +107,7 @@ function TransactionHistory() {
 
           <Link href={{ pathname: '/receipt', params: { ...item } }}>
             <View style={{ alignItems: 'center', gap: 5 }}>
-              <FontAwesome6 name="receipt" size={24} color="gray" />
+              <FontAwesome6 name="receipt" size={24} color="#9E9E9E" />
               <Text
                 style={{
                   width: 40,
@@ -111,7 +121,7 @@ function TransactionHistory() {
             </View>
           </Link>
         </View>
-      </View>
+      </LinearGradient>
     )
   }
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import { router } from 'expo-router'
+import { LinearGradient } from 'expo-linear-gradient'
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 
 import CustomButton from '@/components/CustomButton'
@@ -7,22 +8,29 @@ import TransferSummary from '@/components/TransferSummary'
 
 const Receipt = () => {
   return (
-    <SafeAreaView style={styles.safeareaview}>
-      <View style={styles.container}>
-        <Text style={styles.header}>Receipt</Text>
+    <LinearGradient
+      colors={['#BDBDBD', '#E0E0E0', '#BDBDBD']}
+      style={{ flex: 1 }}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+    >
+      <SafeAreaView style={styles.safeareaview}>
+        <View style={styles.container}>
+          <Text style={styles.header}>Receipt</Text>
 
-        <TransferSummary type="receipt" />
+          <TransferSummary type="receipt" />
 
-        <View style={styles.buttonsContainer}>
-          <CustomButton
-            label="📄 Share Receipt"
-            onPress={() => {}}
-            buttonStyle={{ backgroundColor: 'gray' }}
-          />
-          <CustomButton label="Done" onPress={router.dismissAll} />
+          <View style={styles.buttonsContainer}>
+            <CustomButton
+              label="📄 Share Receipt"
+              onPress={() => {}}
+              buttonStyle={{ backgroundColor: 'gray' }}
+            />
+            <CustomButton label="Done" onPress={router.dismissAll} />
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   )
 }
 

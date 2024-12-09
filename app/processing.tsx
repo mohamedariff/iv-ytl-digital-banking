@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { LinearGradient } from 'expo-linear-gradient'
 import { router, useLocalSearchParams } from 'expo-router'
 import { View, Text, Alert, StyleSheet, SafeAreaView } from 'react-native'
 import * as LocalAuthentication from 'expo-local-authentication'
@@ -75,27 +76,34 @@ const Processing = () => {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Processing</Text>
-        <Text style={styles.description}>Authorise this transaction.</Text>
+    <LinearGradient
+      colors={['#BDBDBD', '#E0E0E0', '#BDBDBD']}
+      style={{ flex: 1 }}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Processing</Text>
+          <Text style={styles.description}>Authorise this transaction.</Text>
 
-        <TransferSummary type="process" />
+          <TransferSummary type="process" />
 
-        <View style={{ flexDirection: 'row', paddingHorizontal: 20 }}>
-          <CustomButton
-            label="Deny"
-            onPress={router.back}
-            buttonStyle={{ width: '50%' }}
-          />
-          <CustomButton
-            label="Approve"
-            onPress={handleBiometricAuthentication}
-            buttonStyle={{ width: '50%' }}
-          />
+          <View style={{ flexDirection: 'row', paddingHorizontal: 20 }}>
+            <CustomButton
+              label="Deny"
+              onPress={router.back}
+              buttonStyle={{ width: '50%' }}
+            />
+            <CustomButton
+              label="Approve"
+              onPress={handleBiometricAuthentication}
+              buttonStyle={{ width: '50%' }}
+            />
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   )
 }
 
@@ -104,7 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#f5f5f5',
     paddingHorizontal: 20,
     paddingVertical: 30
   },

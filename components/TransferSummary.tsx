@@ -30,7 +30,8 @@ function TransferSummary({ type }: { type: TransferSummaryType }) {
     currency: 'MYR'
   }).format(Number(params.amount))
 
-  const status = params.status.charAt(0).toUpperCase() + params.status.slice(1)
+  const status =
+    params.status?.charAt(0).toUpperCase() + params.status?.slice(1)
 
   const copyToClipboard = (text: string) => Clipboard.setString(text)
 
